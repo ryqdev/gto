@@ -1,4 +1,4 @@
 (executable
  (public_name gto)
- (name main)
- (libraries gto))
+ (name gto)
+ (libraries lib))
