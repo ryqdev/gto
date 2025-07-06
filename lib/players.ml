@@ -32,15 +32,11 @@ let string_of_player player =
         card_str
         (string_of_int player.chips)
 
-
-
 let create_players () =
-        [
-            {position = BTN; name = "Alice"; hole_cards = None; chips = 1000};
-            {position = BB;  name = "Bob"; hole_cards = None; chips = 1000};
-            {position = SB;  name = "Charles"; hole_cards = None; chips = 1000};
-            {position = UTG; name = "David"; hole_cards = None; chips = 1000};
-        ]
+    let positions = [BTN; SB; BB; UTG] in
+    List.mapi (fun i position ->
+        {position; name = string_of_int i; hole_cards = None; chips = 1000}
+    ) positions
 
 let deal_cards_to_player deck players =
     let player_num = List.length players in
