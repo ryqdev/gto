@@ -58,12 +58,6 @@ let string_of_card_suit = function
     | Club -> color_white ^ "♣" ^ color_reset
     | Diamond -> color_red ^ "♦" ^ color_reset
 
-(* let string_of_card_suit = function *)
-(*    | Spade -> "♠" *)
-(*    | Heart -> "♥" *)
-(*    | Diamond -> "♦" *)
-(*    | Club -> "♣" *)
-
 let string_of_card card =
     Printf.sprintf "%s%s"
         (string_of_card_value card.value)
@@ -91,6 +85,29 @@ let string_of_player player =
 
 let shuffle_cards cards = cards
 
+let deal_cards_to_player cards players =
+    let card_index = ref 0 in
+    let deal_round players round_count =
+        Printf.printf "Dealing cards in round %d" round_count;
+        List.map (fun p ->
+            let card = cards.(!card_index) in
+            incr card_index;
+            Printf.printf "%s gets %s\n" p.name (string_of_card card);
+            let updated_hole_cards = match round_count with
+                | 1 -> Some (card, card)
+                | 2 -> (match p.hole_cards with
+                    | Some (first_card, _) -> Some (first_card, card)
+                    | None -> failwith "Player should have received first card in round 1"
+                )
+                | _ -> failwith ("Invalid round count: " ^ string_of_int round_count)
+            in
+            {p with hole_cards = updated_hole_cards}
+        ) players
+    in
+    let round1 = deal_round players 1 in
+    let round2 = deal_round round1 2 in
+    round2
+
 let create player_num =
     Printf.printf "Creating game with %d players\n" player_num;
     let suits = [Spade; Heart; Club; Diamond] in
@@ -112,13 +129,18 @@ let create player_num =
     Printf.printf "\n";
 
     let players = [
-        {position = BTN; name = "A"; hole_cards = None; chips = 1000};
-        {position = BB;  name = "B"; hole_cards = None; chips = 1000};
-        {position = SB;  name = "C"; hole_cards = None; chips = 1000};
-        {position = UTG; name = "D"; hole_cards = None; chips = 1000};
+        {position = BTN; name = "Alice"; hole_cards = None; chips = 1000};
+        {position = BB;  name = "Bob"; hole_cards = None; chips = 1000};
+        {position = SB;  name = "Charles"; hole_cards = None; chips = 1000};
+        {position = UTG; name = "David"; hole_cards = None; chips = 1000};
     ] in
 
-    List.iter (fun p -> Printf.printf "%s \n" (string_of_player p)) players
+    Printf.printf "Players before dealing:\n";
 
-    Printf.printf "Game start!\n"
+    List.iter (fun p -> Printf.printf "%s \n" (string_of_player p)) players;
 
+    let players_with_cards = deal_cards_to_player cards players in
+
+    Printf.printf "Players after dealing:\n";
+
+    List.iter (fun p -> Printf.printf "%s \n" (string_of_player p)) players_with_cards
