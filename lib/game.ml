@@ -122,9 +122,18 @@ let deal_cards_to_player deck players =
     round2
 
 
-(* let deal_community_cards cards card_index = *)
-(*    Printf.printf "Dealing community cards...\n"; *)
+ let deal_community_cards deck =
+     Printf.printf "Dealing community cards...\n";
+     let community_cards = ref [] in
 
+     for _ = 1 to 5 do
+        match deal_top_card deck with
+        | Some (card) ->
+            community_cards := card :: !community_cards;
+        | None -> failwith "Not enough cards in deck for community cards"
+     done;
+
+     Array.of_list (List.rev !community_cards)
 
 let create player_num =
     Printf.printf "Creating game with %d players\n" player_num;
@@ -166,4 +175,8 @@ let create player_num =
 
     Printf.printf "Players after dealing:\n";
 
-    List.iter (fun p -> Printf.printf "%s \n" (string_of_player p)) players_with_cards
+    List.iter (fun p -> Printf.printf "%s \n" (string_of_player p)) players_with_cards;
+
+    let community_cards = deal_community_cards deck in
+    Array.iter (fun card -> Printf.printf "%s " (string_of_card card)) community_cards;
+    Printf.printf "\n";
