@@ -22,23 +22,24 @@ type player_position =
     | BB
     | UTG
 
-type player_action =
-    | Check
-    | Raise
-    | Call
-    | Fold
-    | Allin
+(* type player_action = *)
+(*    | Check *)
+(*    | Raise *)
+(*    | Call *)
+(*    | Fold *)
+(*    | Allin *)
 
 type player =
     { position: player_position
-    ; hole_cards: card * card
-    ; action: player_action
+    ; name: string
+    ; hole_cards: (card * card) option
+    ; chips: int
     }
 
-type game_state =
-    | Flop
-    | Turn
-    | River
+(* type game_state = *)
+(*    | Flop *)
+(*    | Turn *)
+(*    | River *)
 
 let string_of_card_value = function
     | Ace -> "A"
@@ -64,7 +65,29 @@ let string_of_card_suit = function
 (*    | Club -> "♣" *)
 
 let string_of_card card =
-    (string_of_card_value card.value) ^ (string_of_card_suit card.suit)
+    Printf.sprintf "%s%s"
+        (string_of_card_value card.value)
+        (string_of_card_suit card.suit)
+
+let string_of_player_position = function
+   | BTN -> "Button"
+   | SB -> "Small Blind"
+   | BB -> "Big Blind"
+   | UTG -> "Under the Gun"
+
+let string_of_player player =
+    let card_str = match player.hole_cards with
+        | None -> "No Cards"
+        | Some (card1, card2) ->
+            Printf.sprintf "%s %s"
+                (string_of_card card1)
+                (string_of_card card2)
+    in
+    Printf.sprintf "%s %s %s %s"
+        (string_of_player_position player.position)
+        player.name
+        card_str
+        (string_of_int player.chips)
 
 let shuffle_cards cards = cards
 
@@ -87,3 +110,15 @@ let create player_num =
     Printf.printf "After shuffling: \n";
     Array.iter (fun card -> Printf.printf "%s " (string_of_card card)) cards;
     Printf.printf "\n";
+
+    let players = [
+        {position = BTN; name = "A"; hole_cards = None; chips = 1000};
+        {position = BB;  name = "B"; hole_cards = None; chips = 1000};
+        {position = SB;  name = "C"; hole_cards = None; chips = 1000};
+        {position = UTG; name = "D"; hole_cards = None; chips = 1000};
+    ] in
+
+    List.iter (fun p -> Printf.printf "%s \n" (string_of_player p)) players
+
+    Printf.printf "Game start!\n"
+
