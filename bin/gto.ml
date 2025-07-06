@@ -1,3 +1,3 @@
 open Lib
 
-let () = Game.create ()
+let () = Game.create

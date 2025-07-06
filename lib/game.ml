@@ -5,9 +5,9 @@
      | Some(cards, new_deck) -> (cards, new_deck)
      | None -> failwith "Not enough cards in deck for community cards"
 
-let create () =
+let create =
     Printf.printf "\n===Creating game===\n";
-    let deck = Cards.create_ordered_deck () in
+    let deck = Cards.shuffle Cards.create_ordered_deck in
     Array.iter (fun card -> Printf.printf "%s " (Cards.string_of_card card)) deck.cards;
     Printf.printf "\n";
 

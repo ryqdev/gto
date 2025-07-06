@@ -51,7 +51,18 @@ let string_of_card card =
         (string_of_card_value card.value)
         (string_of_card_suit card.suit)
 
-let create_ordered_deck () =
+(* Fisher-Yates Shuffle Algorithm *)
+let shuffle deck =
+    let updated_cards = Array.copy deck.cards in
+    for i = 0 to 51 do
+        let j = Random.int (52 - i) + i in
+        let temp = updated_cards.(i) in
+        updated_cards.(i) <- updated_cards.(j);
+        updated_cards.(j) <- temp
+    done;
+    {deck with cards = updated_cards}
+
+let create_ordered_deck =
         let suits = [
             Spade; Heart; Club; Diamond
         ] in
