@@ -44,11 +44,9 @@ let create_players () =
 
 let deal_cards_to_player deck players =
     let deal_round players round_count =
-        Printf.printf "Dealing cards in round %d" round_count;
         List.map (fun p ->
             match Cards.deal_top_card deck with
             | Some (card) ->
-                Printf.printf "%s gets %s\n" p.name (Cards.string_of_card card);
                 let updated_hole_cards = match round_count with
                     | 1 -> Some (card, card)
                     | 2 -> (match p.hole_cards with
