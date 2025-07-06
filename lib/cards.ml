@@ -55,6 +55,7 @@ let string_of_card card =
 let shuffle deck =
     let updated_cards = Array.copy deck.cards in
     for i = 0 to 51 do
+(*    TODO: should use different seed *)
         let j = Random.int (52 - i) + i in
         let temp = updated_cards.(i) in
         updated_cards.(i) <- updated_cards.(j);
