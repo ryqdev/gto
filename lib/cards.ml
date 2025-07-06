@@ -18,14 +18,14 @@ type card =
 
 type deck =
     { cards: card array
-     ; card_index: int ref
+     ; card_index: int
     }
 
-let deal_top_card deck =
-    if !(deck.card_index) < Array.length deck.cards then
-        let card = deck.cards.(!(deck.card_index)) in
-        incr deck.card_index;
-        Some card
+let deal_top_n_card n deck =
+    if deck.card_index + n <= Array.length deck.cards then
+        let cards = Array.sub deck.cards deck.card_index n in
+        let new_deck = {deck with card_index = deck.card_index + n} in
+        Some (cards, new_deck)
     else
         None
 
@@ -51,17 +51,26 @@ let string_of_card card =
         (string_of_card_value card.value)
         (string_of_card_suit card.suit)
 
-
-
 let create_ordered_deck () =
-        let suits = [Spade; Heart; Club; Diamond] in
-        let values = [Ace; Number 2; Number 3; Number 4; Number 5; Number 6;
-                        Number 7; Number 8; Number 9; Number 10; Jack; Queen; King] in
+        let suits = [
+            Spade; Heart; Club; Diamond
+        ] in
+
+        let values = [
+            Ace; Number 2; Number 3; Number 4; Number 5; Number 6;
+            Number 7; Number 8; Number 9; Number 10; Jack; Queen; King
+        ] in
+
+        let cards =
+            List.map (fun suit ->
+                List.map (fun value ->
+                    {value; suit}
+                ) values
+            ) suits
+            |> List.concat
+            |> Array.of_list
+        in
         {
-            cards = List.map (fun suit ->
-                            List.map (fun value -> {value; suit}) values
-                            ) suits
-                        |> List.concat
-                        |> Array.of_list;
-            card_index = ref 0;
+            cards;
+            card_index = 0;
         }

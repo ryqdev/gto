@@ -43,22 +43,13 @@ let create_players () =
         ]
 
 let deal_cards_to_player deck players =
-    let deal_round players round_count =
-        List.map (fun p ->
-            match Cards.deal_top_card deck with
-            | Some (card) ->
-                let updated_hole_cards = match round_count with
-                    | 1 -> Some (card, card)
-                    | 2 -> (match p.hole_cards with
-                        | Some (first_card, _) -> Some (first_card, card)
-                        | None -> failwith "Player should have received first card in round 1"
-                    )
-                    | _ -> failwith ("Invalid round count: " ^ string_of_int round_count)
-                in
-                {p with hole_cards = updated_hole_cards}
-            | None -> failwith "No Card in Deck"
-        ) players
-    in
-    let round1 = deal_round players 1 in
-    let round2 = deal_round round1 2 in
-    round2
+    let player_num = List.length players in
+    let cards_to_deal = Cards.deal_top_n_card (player_num * 2) in
+    match cards_to_deal deck with
+    | Some (cards, new_deck) ->
+        let updated_players =
+            List.mapi (fun i player ->
+                {player with hole_cards = Some(cards.(i), cards.(i + player_num))}
+            ) players in
+        (updated_players, new_deck)
+    | None -> failwith "Not enough cards in deck"
