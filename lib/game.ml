@@ -16,6 +16,30 @@ type card =
     ; suit: card_suit
     }
 
+type player_position =
+    | BTN
+    | SB
+    | BB
+    | UTG
+
+type player_action =
+    | Check
+    | Raise
+    | Call
+    | Fold
+    | Allin
+
+type player =
+    { position: player_position
+    ; hole_cards: card * card
+    ; action: player_action
+    }
+
+type game_state =
+    | Flop
+    | Turn
+    | River
+
 let string_of_card_value = function
     | Ace -> "A"
     | King -> "K"
@@ -42,6 +66,8 @@ let string_of_card_suit = function
 let string_of_card card =
     (string_of_card_value card.value) ^ (string_of_card_suit card.suit)
 
+let shuffle_cards cards = cards
+
 let create player_num =
     Printf.printf "Creating game with %d players\n" player_num;
     let suits = [Spade; Heart; Club; Diamond] in
@@ -54,4 +80,10 @@ let create player_num =
     |> Array.of_list in
 
     Array.iter (fun card -> Printf.printf "%s " (string_of_card card)) cards;
-    Printf.printf "\n"
+    Printf.printf "\n";
+
+    let cards = shuffle_cards cards in
+
+    Printf.printf "After shuffling: \n";
+    Array.iter (fun card -> Printf.printf "%s " (string_of_card card)) cards;
+    Printf.printf "\n";
