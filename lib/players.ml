@@ -13,10 +13,10 @@ type player =
 
 
 let string_of_player_position = function
-   | BTN -> "Button"
-   | SB -> "Small Blind"
-   | BB -> "Big Blind"
-   | UTG -> "Under the Gun"
+   | BTN -> "BTN"
+   | SB -> "SB"
+   | BB -> "BB"
+   | UTG -> "UTG"
 
 let string_of_player player =
     let card_str = match player.hole_cards with
